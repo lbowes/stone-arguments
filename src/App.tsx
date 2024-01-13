@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Block from './components/Block';
+import Pillar from './components/Pillar';
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      width: '100vw'
+    }}>
+      <div style={{
+        width: '600px',
+        height: '600px',
+        border: '1px solid #eee',
+        borderRadius: '16px',
+        overflow: 'hidden'
+      }}>
+        <svg width="100%" height="100%">
+          <Block x={20} y={20} width={400} height={50} padding={10}/>
+          <Pillar x={40} y={70} width={80} height={500} channelWidth={12}/>
+          <Pillar x={230} y={70} width={100} height={400} channelWidth={12}/>
+          <Block x={135} y={470} width={200} height={100} padding={10}/>
+        </svg>
+      </div>
     </div>
   );
 }
+
 
 export default App;
