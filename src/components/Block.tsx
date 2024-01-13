@@ -1,3 +1,6 @@
+import { useRef, useEffect, useState } from 'react';
+
+
 interface BlockProps {
     x: number;
     y: number;
@@ -7,6 +10,21 @@ interface BlockProps {
 }
 
 const Block: React.FC<BlockProps> = ({ x, y, width, height, padding }) => {
+    const filterId = useRef(`hand-drawn-filter-${Math.random().toString(36).substr(2, 9)}`).current;
+
+    const [seed, setSeed] = useState(0);
+
+    // useEffect(() => {
+    //     let counter = 0;
+    //     const interval = setInterval(() => {
+    //         counter++;
+    //         const newSeed = (Date.now() + counter) % 1000;
+    //         setSeed(newSeed);
+    //     }, 100);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
     const points = [
         // Outer rectangle
         [0, 0], // A
@@ -33,12 +51,25 @@ const Block: React.FC<BlockProps> = ({ x, y, width, height, padding }) => {
 
     const verticalColor = '#ddd';
     const middleColor = '#eaeaea';
+    const crackColor = '#d4d4d4';
 
     return <>
-        <polygon points={left} style={{ fill: '#aaa' }} />
+        {/* noise filter for notches */}
+        <defs>
+            <filter id={filterId + seed}>
+                <feTurbulence type="fractalNoise" baseFrequency="0.021" numOctaves="3" result="turbulence" />
+                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+
+        {/* background for notches */}
+        <rect x={x} y={y} width={width} height={height} style={{ fill: crackColor }} />
+
+        {/* faces of the block */}
+        <polygon points={left} style={{ fill: '#aaa' }}/>
         <polygon points={top} style={{ fill: verticalColor }} />
         <polygon points={bottom} style={{ fill: verticalColor }} />
-        <polygon points={middle} style={{ fill: middleColor }} />
+        <polygon points={middle} style={{ fill: middleColor }}  filter={`url(#${filterId + seed})`} />
         <polygon points={right} style={{ fill: '#f8f8f8' }} />
     </>;
 };

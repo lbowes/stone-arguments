@@ -1,8 +1,48 @@
-import Block from './components/Block';
-import Pillar from './components/Pillar';
+import JitterPath from './components/JitterStroke';
+import Space2D from './components/Space2D';
+import ArgumentCanvas from './components/ArgumentCanvas';
+
+
+import { useRef, useState, useEffect } from 'react';
+
+
+type HandDrawnPathProps = {
+  pathData: string;
+};
+
+const HandDrawnPath: React.FC<HandDrawnPathProps> = ({ pathData }) => {
+  const filterId = useRef(`hand-drawn-filter-${Math.random().toString(36).substr(2, 9)}`).current;
+
+  const [seed, setSeed] = useState(0);
+
+  // useEffect(() => {
+  //     let counter = 0;
+  //     const interval = setInterval(() => {
+  //         counter++;
+  //         const newSeed = (Date.now() + counter) % 1000;
+  //         setSeed(newSeed);
+  //     }, 100);
+
+  //     return () => clearInterval(interval);
+  // }, []);
+
+  return (
+    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id={filterId + seed}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.021" numOctaves="3" seed={seed} result="turbulence" />
+          <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+      <path d={pathData} strokeWidth={2} stroke="#333" fill="transparent" filter={`url(#${filterId + seed})`} />
+    </svg>
+  );
+};
 
 
 const App = () => {
+  const pathData = "M10 80 C 40 10, 65 18, 95 80 S 150 150, 380 80";
+
   return (
     <div style={{
       display: 'flex',
@@ -15,17 +55,17 @@ const App = () => {
       <div style={{
         width: '600px',
         height: '600px',
-        border: '1px solid #eee',
+        border: '1px solid #bbb',
         borderRadius: '16px',
         overflow: 'hidden'
       }}>
-        <svg width="100%" height="100%">
-          <Block x={20} y={20} width={400} height={50} padding={10}/>
-          <Pillar x={40} y={70} width={80} height={500} channelWidth={12}/>
-          <Pillar x={230} y={70} width={100} height={400} channelWidth={12}/>
-          <Block x={135} y={470} width={200} height={100} padding={10}/>
-        </svg>
+        <Space2D>
+          <ArgumentCanvas />
+        </Space2D>
       </div>
+
+      <JitterPath pathData={pathData} jitterAmount={10} />
+      <HandDrawnPath pathData={pathData} />
     </div>
   );
 }
