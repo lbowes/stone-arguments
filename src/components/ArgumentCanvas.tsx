@@ -5,23 +5,21 @@ import Pillar from "./Pillar";
 
 
 const ArgumentCanvas = () => {
-    const { pos, size, spacePosToScreen, spaceVectorToScreen } = useContext(Space2DContext);
+    const { data, worldPosToView, worldVectorToView } = useContext(Space2DContext);
 
-    const [pillarPos, setPillarPos] = useState<{ x: number, y: number }>({ x: 0.2, y: 0 });
-    const [pillarSize, setPillarSize] = useState<{ width: number, height: number }>({ width: 0.1, height: 0.6 });
+    const [pillarPos, setPillarPos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [pillarSize, setPillarSize] = useState<{ width: number, height: number }>({ width: 0, height: 0 });
 
-    const pillarWidth = 0.1;
-    const pillarHeight = 0.6;
+    const pillarWidth = 0.3;
+    const pillarHeight = 0.3;
 
     useEffect(() => {
-        const { x, y } = spacePosToScreen({ x: 0.2, y: 0 });
-        const newSize = spaceVectorToScreen({ x: pillarWidth, y: pillarHeight });
-
-        console.log(`newSize: ${JSON.stringify(newSize)}`)
+        const { x, y } = worldPosToView({ x: 0, y: 0 });
+        const newSize = worldVectorToView({ x: pillarWidth, y: pillarHeight });
 
         setPillarPos({ x, y });
         setPillarSize({ width: newSize.x, height: newSize.y });
-    }, [pos, size, spacePosToScreen, spaceVectorToScreen]);
+    }, [ data, worldPosToView, worldVectorToView]);
 
     return <>
         <svg width="100%" height="100%">
